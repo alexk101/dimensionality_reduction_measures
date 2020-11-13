@@ -64,23 +64,40 @@ def calculateTestResults():
         print("Processed a result")
 
 def printTestResults():
-    for y in range(4):
-        x=embeddings[y]
-        x2=embeddings[y+1]
+
+    f = open("demofile3.txt", "w")
+
+    for y in range(0,8,2):
+        x=results[y]
+        x2=results[y+1]
 
         if(y==0):
-            print("LargeVis Results- \n")
+            m1="LargeVis Results- \n"
+            print(m1)
+            f.write(m1)
         elif(y==1):
-            print("Trimap Results- \n")
+            m2="Trimap Results- \n"
+            print(m2)
+            f.write(m2)
         elif(y==2):
-            print("TSNE Results- \n")
+            m3="TSNE Results- \n"
+            print(m3)
+            f.write(m3)
         else:
-            print("UMAP Results- \n")
+            m4="UMAP Results- \n"
+            print(m4)
+            f.write(m4)
 
-        print("MNIST Digits Scores: silhouette:", x[0], "davies_bouldin:", x[1])
-        print("Fashion MNIST Scores: silhouette:", x2[0], "davies_bouldin:", x2[1],"\n")
+        mc1="MNIST Digits Scores: silhouette: "+ str(x[0])+ "    |  davies_bouldin: "+ str(x[1])+"\n"
+        print(mc1)
+        f.write(mc1)
+        mc2="Fashion MNIST Scores: silhouette: "+ str(x2[0]) +"  |  davies_bouldin: "+ str(x2[1])+"\n"
+        print(mc2)
+        f.write(mc2)
     
     print("Analysis complete!")
+    f.close()
+
 
 
 loadTestEmbeddings()
