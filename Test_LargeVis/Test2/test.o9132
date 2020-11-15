@@ -1,0 +1,2 @@
+/var/spool/slurmd/job09132/slurm_script: line 7: syntax error near unexpected token `('
+/var/spool/slurmd/job09132/slurm_script: line 7: ` srun -p juliet -N 1 -n 1 -c 1 (time ./LargeVis -input mnist_vec784D.txt -output mnist_vec2D.txt) &> measurement.txt'

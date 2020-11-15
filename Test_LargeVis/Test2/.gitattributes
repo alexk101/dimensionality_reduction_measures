@@ -1,0 +1,2 @@
+mnist_vec784D.txt filter=lfs diff=lfs merge=lfs -text
+annoy_index_file filter=lfs diff=lfs merge=lfs -text

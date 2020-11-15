@@ -1,0 +1,4 @@
+real time    1m39.526s
+user         4m18.929s
+sys          0m13.545s
+
