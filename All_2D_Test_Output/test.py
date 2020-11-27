@@ -1,6 +1,10 @@
 import numpy as np
 import warnings
+import trimap as tri
 import sklearn.metrics as metrics
+import sklearn.manifold as manifold
+import time
+import progressbar as pb
 from sklearn.datasets import fetch_openml
 warnings.filterwarnings("ignore")
 
@@ -15,6 +19,9 @@ mnistDigits=fetch_openml("mnist_784", version=1)
 
 fashion_labels=mnistFashion['target']
 digits_labels=mnistDigits['target']
+fashion_hd_data=mnistFashion['data']
+digits_hd_data=mnistDigits['data']
+
 embeddings=[]
 results = []
 
@@ -38,14 +45,14 @@ def readEmbeddings(filename, nodes, dim):
 
 
 def loadTestEmbeddings():
-    array_digits_largevis= readEmbeddings('/home/alexk101/Documents/Research_2020/tests/All_2D_Test_Output/with_first_line/mnist_2D_LargeVis.txt', 70000, 2)
-    array_fashion_largevis=readEmbeddings('/home/alexk101/Documents/Research_2020/tests/All_2D_Test_Output/with_first_line/fashion_mnist_2D_LargeVis.txt' ,70000 , 2)
-    array_digits_trimap=readEmbeddings('/home/alexk101/Documents/Research_2020/tests/All_2D_Test_Output/with_first_line/mnist_2D_Trimap.txt' ,70000 , 2)
-    array_fashion_trimap=readEmbeddings('/home/alexk101/Documents/Research_2020/tests/All_2D_Test_Output/with_first_line/fashion_mnist_2D_Trimap.txt' ,70000 , 2)
-    array_digits_tsne=readEmbeddings('/home/alexk101/Documents/Research_2020/tests/All_2D_Test_Output/with_first_line/mnist_2D_TSNE.txt' ,70000 , 2)
-    array_fashion_tsne=readEmbeddings('/home/alexk101/Documents/Research_2020/tests/All_2D_Test_Output/with_first_line/fashion_mnist_2D_TSNE.txt' ,70000 , 2)
-    array_digits_umap=readEmbeddings('/home/alexk101/Documents/Research_2020/tests/All_2D_Test_Output/with_first_line/mnist_2D_UMAP.txt' ,70000 , 2)
-    array_fashion_umap=readEmbeddings('/home/alexk101/Documents/Research_2020/tests/All_2D_Test_Output/with_first_line/fashion_mnist_2D_UMAP.txt' ,70000 , 2)
+    array_digits_largevis= readEmbeddings('/home/alexk101/dimensionality_reduction_measures/All_2D_Test_Output/with_first_line/mnist_2D_LargeVis.txt', 70000, 2)
+    array_fashion_largevis=readEmbeddings('/home/alexk101/dimensionality_reduction_measures/All_2D_Test_Output/with_first_line/fashion_mnist_2D_LargeVis.txt' ,70000 , 2)
+    array_digits_trimap=readEmbeddings('/home/alexk101/dimensionality_reduction_measures/All_2D_Test_Output/with_first_line/mnist_2D_Trimap.txt' ,70000 , 2)
+    array_fashion_trimap=readEmbeddings('/home/alexk101/dimensionality_reduction_measures/All_2D_Test_Output/with_first_line/fashion_mnist_2D_Trimap.txt' ,70000 , 2)
+    array_digits_tsne=readEmbeddings('/home/alexk101/dimensionality_reduction_measures/All_2D_Test_Output/with_first_line/mnist_2D_TSNE.txt' ,70000 , 2)
+    array_fashion_tsne=readEmbeddings('/home/alexk101/dimensionality_reduction_measures/All_2D_Test_Output/with_first_line/fashion_mnist_2D_TSNE.txt' ,70000 , 2)
+    array_digits_umap=readEmbeddings('/home/alexk101/dimensionality_reduction_measures/All_2D_Test_Output/with_first_line/mnist_2D_UMAP.txt' ,70000 , 2)
+    array_fashion_umap=readEmbeddings('/home/alexk101/dimensionality_reduction_measures/All_2D_Test_Output/with_first_line/fashion_mnist_2D_UMAP.txt' ,70000 , 2)
 
     embeddings.append([array_digits_largevis, array_fashion_largevis])
     embeddings.append([array_digits_trimap, array_fashion_trimap])
@@ -53,14 +60,19 @@ def loadTestEmbeddings():
     embeddings.append([array_digits_umap, array_fashion_umap])
 
 def calculateTestResults():
-    for x in embeddings:
+    for x in pb.progressbar(iter(embeddings), redirect_stdout=True):
         silh=metrics.silhouette_score(x[0], digits_labels)
         davd=metrics.davies_bouldin_score(x[0], digits_labels)
-        results.append([silh, davd])
+        globalStruct=tri.TRIMAP(verbose=False).global_score(digits_hd_data, x[0])
+        localStruct=manifold.trustworthiness(digits_hd_data, x[0])
+        results.append([silh, davd, globalStruct, localStruct])
         print("Processed a result")
+
         silh2=metrics.silhouette_score(x[1], fashion_labels)
         davd2=metrics.davies_bouldin_score(x[1], fashion_labels)
-        results.append([silh2, davd2])
+        globalStruct2=tri.TRIMAP(verbose=False).global_score(fashion_hd_data, x[1])
+        localStruct2=manifold.trustworthiness(fashion_hd_data, x[1])
+        results.append([silh2, davd2, globalStruct2, localStruct2])
         print("Processed a result")
 
 def printTestResults():
@@ -88,17 +100,15 @@ def printTestResults():
             print(m4)
             f.write(m4)
 
-        mc1="MNIST Digits Scores: silhouette: "+ str(x[0])+ "    |  davies_bouldin: "+ str(x[1])+"\n"
+        mc1="MNIST Digits Scores: silhouette: "+ str(x[0])+ "    |  davies bouldin: "+ str(x[1])+ "    | global structure: "+ str(x[2])+ "    |  local structure: "+ str(x[3])+"\n"
         print(mc1)
         f.write(mc1)
-        mc2="Fashion MNIST Scores: silhouette: "+ str(x2[0]) +"  |  davies_bouldin: "+ str(x2[1])+"\n"
+        mc2="Fashion MNIST Scores: silhouette: "+ str(x2[0]) +"  |  davies bouldin: "+ str(x2[1])+ "    | global structure: "+ str(x2[2])+ "    |  local structure: "+ str(x2[3])+"\n"
         print(mc2)
         f.write(mc2)
     
     print("Analysis complete!")
     f.close()
-
-
 
 loadTestEmbeddings()
 calculateTestResults()
