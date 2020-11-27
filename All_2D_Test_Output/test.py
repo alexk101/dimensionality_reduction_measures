@@ -4,6 +4,7 @@ import trimap as tri
 import sklearn.metrics as metrics
 import sklearn.manifold as manifold
 import time
+import os
 import progressbar as pb
 from sklearn.datasets import fetch_openml
 warnings.filterwarnings("ignore")
@@ -13,6 +14,8 @@ warnings.filterwarnings("ignore")
 # Indiana University Bloomington
 # Collaborators: Md Khaledur Rahman
 # Email: morahma@iu.edu
+
+location = os.path.realpath(os.getcwd())
 
 mnistFashion=fetch_openml(name="Fashion-MNIST")
 mnistDigits=fetch_openml("mnist_784", version=1)
@@ -43,14 +46,14 @@ def readEmbeddings(filename, nodes, dim):
 
 
 def loadTestEmbeddings():
-    array_digits_largevis= readEmbeddings('/home/alexk101/dimensionality_reduction_measures/All_2D_Test_Output/with_first_line/mnist_2D_LargeVis.txt', 70000, 2)
-    array_fashion_largevis=readEmbeddings('/home/alexk101/dimensionality_reduction_measures/All_2D_Test_Output/with_first_line/fashion_mnist_2D_LargeVis.txt' ,70000 , 2)
-    array_digits_trimap=readEmbeddings('/home/alexk101/dimensionality_reduction_measures/All_2D_Test_Output/with_first_line/mnist_2D_Trimap.txt' ,70000 , 2)
-    array_fashion_trimap=readEmbeddings('/home/alexk101/dimensionality_reduction_measures/All_2D_Test_Output/with_first_line/fashion_mnist_2D_Trimap.txt' ,70000 , 2)
-    array_digits_tsne=readEmbeddings('/home/alexk101/dimensionality_reduction_measures/All_2D_Test_Output/with_first_line/mnist_2D_TSNE.txt' ,70000 , 2)
-    array_fashion_tsne=readEmbeddings('/home/alexk101/dimensionality_reduction_measures/All_2D_Test_Output/with_first_line/fashion_mnist_2D_TSNE.txt' ,70000 , 2)
-    array_digits_umap=readEmbeddings('/home/alexk101/dimensionality_reduction_measures/All_2D_Test_Output/with_first_line/mnist_2D_UMAP.txt' ,70000 , 2)
-    array_fashion_umap=readEmbeddings('/home/alexk101/dimensionality_reduction_measures/All_2D_Test_Output/with_first_line/fashion_mnist_2D_UMAP.txt' ,70000 , 2)
+    array_digits_largevis= readEmbeddings(os.path.join(location, 'mnist_2D_LargeVis.txt'), 70000, 2)
+    array_fashion_largevis=readEmbeddings(os.path.join(location, 'fashion_mnist_2D_LargeVis.txt'), 70000, 2)
+    array_digits_trimap=readEmbeddings(os.path.join(location, 'mnist_2D_Trimap.txt'), 70000, 2)
+    array_fashion_trimap=readEmbeddings(os.path.join(location, 'fashion_mnist_2D_Trimap.txt'), 70000, 2)
+    array_digits_tsne=readEmbeddings(os.path.join(location, 'mnist_2D_TSNE.txt'), 70000, 2)
+    array_fashion_tsne=readEmbeddings(os.path.join(location, 'fashion_mnist_2D_TSNE.txt'), 70000, 2)
+    array_digits_umap=readEmbeddings(os.path.join(location, 'mnist_2D_UMAP.txt'), 70000, 2)
+    array_fashion_umap=readEmbeddings(os.path.join(location, 'fashion_mnist_2D_UMAP.txt'), 70000, 2)
 
     embeddings.append([array_digits_largevis, array_fashion_largevis])
     embeddings.append([array_digits_trimap, array_fashion_trimap])
@@ -75,7 +78,7 @@ def calculateTestResults():
 
 def printTestResults():
 
-    f = open("demofile3.txt", "w")
+    f = open("embedding_measures.txt", "w")
 
     for y in range(0,8,2):
         x=results[y]
