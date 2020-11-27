@@ -27,8 +27,6 @@ results = []
 
 def readEmbeddings(filename, nodes, dim):
     embfile = open(filename, "r")
-    firstline = embfile.readline()
-    N = int(firstline.strip().split()[0])
     X = [[0]*dim for i in range(nodes)]
     currentLine=0
     for line in embfile.readlines():
