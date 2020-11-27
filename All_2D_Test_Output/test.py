@@ -4,6 +4,7 @@ import trimap as tri
 import sklearn.metrics as metrics
 import sklearn.manifold as manifold
 import time
+import sys
 import os
 import progressbar as pb
 from sklearn.datasets import fetch_openml
@@ -15,7 +16,8 @@ warnings.filterwarnings("ignore")
 # Collaborators: Md Khaledur Rahman
 # Email: morahma@iu.edu
 
-location = os.path.realpath(os.getcwd())
+location = sys.path[0]
+print(str(location))
 
 mnistFashion=fetch_openml(name="Fashion-MNIST")
 mnistDigits=fetch_openml("mnist_784", version=1)
